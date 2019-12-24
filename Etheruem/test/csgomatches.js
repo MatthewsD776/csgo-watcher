@@ -84,5 +84,15 @@ contract('CSGOMatches', (accounts) => {
 
             await truffleAssert.reverts(instance.addMatch(map, ctWins, tWins, underPlayers, {from : account1}), 'Invalid Match');
         });
+
+        it('should emit an event when match is added', async () => {
+            let ctWins = 16;
+            let tWins = 8;
+            let map = "Dust 2"; 
+
+            let tx = await instance.addMatch(map, ctWins, tWins, players, {from : account1});
+
+            truffleAssert.eventEmitted(tx, 'NewMatch', null, "Event was not emitted");
+        });
     });
 });
