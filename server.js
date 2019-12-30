@@ -16,6 +16,14 @@ server = http.createServer( function(req, res) {
         });
         req.on('end', function () {
             console.log("POST payload for Event id " + eventId + ": \n" + body);
+
+            fs.writeFile("/tmp/test", "Hey there!", function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            });
+
             eventId = eventId + 1;
         	res.end( '' );
         });
