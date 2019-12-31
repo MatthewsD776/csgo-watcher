@@ -5,6 +5,8 @@ port = 3000;
 host = '127.0.0.1';
 eventId = 0;
 
+var stream = fs.createWriteStream("data/testGame.txt", {flags:'a'});
+
 server = http.createServer( function(req, res) {
 
     if (req.method == 'POST') {
@@ -17,12 +19,9 @@ server = http.createServer( function(req, res) {
         req.on('end', function () {
             console.log("POST payload for Event id " + eventId + ": \n" + body);
 
-            fs.writeFile("/tmp/test", "Hey there!", function(err) {
-                if(err) {
-                    return console.log(err);
-                }
-                console.log("The file was saved!");
-            });
+            var toWrite = "\n - Event : " + eventId + " - \n \n" + body + "\n";
+
+            stream.write(toWrite);
 
             eventId = eventId + 1;
         	res.end( '' );
