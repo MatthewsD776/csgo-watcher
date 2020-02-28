@@ -1,0 +1,22 @@
+{
+    "markdownlint.config": {
+        "MD003": { "style": "atx" },
+        "MD007": { "indent": 4 },
+        "MD009": { "br_spaces": 2 },
+        "MD013": false,
+        "MD024": false,
+        "MD026": { "punctuation": ".,;:!\u3002\u320F\uFF01\uFF1F\uFF1A" },
+        "MD030": { "ul_single": 2,
+            "ol_single": 2, 
+            "ul_multi": 2, 
+            "ol_multi": 2 ,
+        }, 
+        "MD036": { "punctuation": ".,;:!\u3002\u320F\uFF01\uFF1F\uFF1A" },
+        "MD033": true,
+        "MD040": false,
+        },
+        "files.autoSave": "afterDelay",
+        "workbench.colorTheme": "Cobalt2",
+        "window.zoomLevel": 0,
+        "vsicons.dontShowNewVersionMessage": true,
+}
