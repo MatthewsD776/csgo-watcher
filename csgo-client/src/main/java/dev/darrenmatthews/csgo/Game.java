@@ -38,8 +38,8 @@ public class Game {
 	private void updateStats(MapState mapState) {
 		TeamStats ctStats = mapState.getCounterTerroristStatistics();
 		TeamStats tStats = mapState.getTerroristStatistics();
-
-		//TODO Check for mid game joining
+		
+		System.out.println(mapState.getRoundResults());
 		
 		int newCtScore = ctStats.getScore();
 		int newTScore = tStats.getScore();
@@ -62,17 +62,30 @@ public class Game {
 		this.currentRound = finalRound.getRoundNumber();
 		this.updateStats(finalRound);
 
-		System.out.println("Ended game on round " + this.currentRound);
-		System.out.println("Counter Terrorists Won " + this.ctWins + " Round(s)");
-		System.out.println("Terrorists Won " + this.tWins + " Round(s)");
-
+		this.printState();
+	}
+	
+	private void printState() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(" - Game State -").append(System.lineSeparator());
+		builder.append("     Map : ").append(map).append(System.lineSeparator());
+		builder.append("     GameMode : ").append(gameMode).append(System.lineSeparator());
+		builder.append("     Rounds : ").append(currentRound).append(System.lineSeparator());
+		builder.append("     CT Wins : ").append(ctWins).append(System.lineSeparator());
+		builder.append("     T Wins : ").append(tWins).append(System.lineSeparator());
+		
 		if (ctWins > tWins) {
-			System.out.println("Counter Terrorists WON!!!!");
+			builder.append("     Result : Counter Terrorists");
 		} else if (tWins > ctWins) {
-			System.out.println("Terrorists WON!!!!");
+			builder.append("     Result : Terrorists");
 		} else {
-			System.out.println("Twas a DRAW");
+			builder.append("     Result : Draw");
 		}
+		
+		builder.append(System.lineSeparator());
+		
+		System.out.println(builder.toString());
 	}
 
 }

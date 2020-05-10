@@ -20,9 +20,9 @@ public class CurrentGame {
 
 	public static void endGame(GameState finalRound) {
 		if (currentGame != null) {
+			System.out.println("Ending game for : " + currentGame.map);
 			MapState finalMapState = finalRound.getMapState();
 			currentGame.finalRound(finalMapState);
-			System.out.println("Ending game for : " + currentGame.map);
 			currentGame = null;
 		}
 	}
