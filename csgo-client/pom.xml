@@ -7,8 +7,7 @@
 	<version>0.0.1</version>
 
 	<properties>
-		<maven.compile.source>1.8</maven.compile.source>
-		<maven.compile.target>1.8</maven.compile.target>
+		<maven.compiler.release>14</maven.compiler.release>
 	</properties>
 
 	<dependencies>

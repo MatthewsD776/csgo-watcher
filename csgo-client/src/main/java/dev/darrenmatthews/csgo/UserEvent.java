@@ -1,7 +1,5 @@
 package dev.darrenmatthews.csgo;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -24,16 +22,11 @@ public class UserEvent extends MongoConnector {
 	
 	protected UserEvent() {
 		super("data", "userEvents");
-		this.createdTimeStamp = getDate();
+		this.createdTimeStamp = Helper.getDate();
 	}
 
 	public void recordEvent() {
-		this.sentTimeStamp = getDate();
+		this.sentTimeStamp = Helper.getDate();
 		this.insert();
-	}
-	
-	private Date getDate() {
-		OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-		return Date.from(utc.toInstant());
 	}
 }

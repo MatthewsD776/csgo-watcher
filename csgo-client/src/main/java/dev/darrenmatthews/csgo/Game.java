@@ -1,19 +1,24 @@
 package dev.darrenmatthews.csgo;
 
+import java.util.Date;
 import uk.oczadly.karl.csgsi.state.MapState;
-import uk.oczadly.karl.csgsi.state.MapState.TeamStats;
+import uk.oczadly.karl.csgsi.state.MapState.GamePhase;
+import uk.oczadly.karl.csgsi.state.RoundState;
+import uk.oczadly.karl.csgsi.state.RoundState.RoundPhase;
+import uk.oczadly.karl.csgsi.state.components.Team;
 
 public class Game {
 
 	public final String map;
 	public final String creator;
 	public final String gameMode;
-
+	public final Date startTime;
+	
 	private int ctWins;
-
 	private int tWins;
-
 	private int currentRound;
+	private RoundPhase currentRoundPhase;
+	private boolean isEnded;
 
 	public Game(String map, String creator, String gameMode) {
 		this.map = map;
@@ -22,50 +27,57 @@ public class Game {
 		this.ctWins = 0;
 		this.tWins = 0;
 		this.currentRound = 0;
+		this.startTime = Helper.getDate();
+		this.isEnded = false;
 	}
 
-	public void updateMapState(MapState mapState) {
-		int roundState = mapState.getRoundNumber();
-
-		if (roundState > currentRound) {
-			System.out.println("Completed Round " + this.currentRound + ". Updating stats");
-			updateStats(mapState);
-			currentRound = roundState;
-			System.out.println("Playing Round " + this.currentRound);
-		}
-	}
-
-	private void updateStats(MapState mapState) {
-		TeamStats ctStats = mapState.getCounterTerroristStatistics();
-		TeamStats tStats = mapState.getTerroristStatistics();
+	public void updateGameState(MapState mapState, RoundState roundState) {
+		GamePhase gamePhase = mapState.getPhase().getEnum();
+		RoundPhase roundPhase = roundState.getPhase().getEnum();
 		
-		System.out.println(mapState.getRoundResults());
-		
-		int newCtScore = ctStats.getScore();
-		int newTScore = tStats.getScore();
-
-		if (newCtScore > ctWins) {
-			roundWin("CT");
-		} else if (newTScore > tWins) {
-			roundWin("T");
+		//check if joined in progress game
+		if(mapState.getRoundResults().size() > (currentRound + 1)) {
+			
+			int roundNumber = mapState.getRoundNumber();
+			if(roundState.getPhase().getEnum().equals(RoundPhase.OVER)) {
+				currentRound = roundNumber;
+			} else {
+				currentRound = roundNumber + 1;
+			}
+			
+			System.out.println("Joined on Round " + currentRound);
+			ctWins = mapState.getCounterTerroristStatistics().getScore();
+			tWins = mapState.getTerroristStatistics().getScore();
 		}
-
-		this.ctWins = newCtScore;
-		this.tWins = newTScore;
-	}
-
-	private void roundWin(String team) {
-		System.out.println(team + " won round " + this.currentRound);
-	}
-
-	public void finalRound(MapState finalRound) {
-		this.currentRound = finalRound.getRoundNumber();
-		this.updateStats(finalRound);
-
-		this.printState();
+		
+		
+		//Check for a change in the round state
+		if(roundPhase != null && !roundPhase.equals(currentRoundPhase)) {
+			if(roundPhase.equals(RoundPhase.OVER)) {
+				Team winningTeam = roundState.getWinningTeam().getEnum();
+				System.out.println("Round " + currentRound + " is now OVER. " + winningTeam.toString() + " won");
+				ctWins = mapState.getCounterTerroristStatistics().getScore();
+				tWins = mapState.getTerroristStatistics().getScore();
+				currentRound++;
+			} else if(roundPhase.equals(RoundPhase.LIVE)) {
+				System.out.println("Round " + currentRound + " is now LIVE");
+				
+			} else if(roundPhase.equals(RoundPhase.FREEZE_TIME)) {
+				System.out.println("Round " + currentRound + " is now FROZEN");
+			}
+			
+			currentRoundPhase = roundPhase;
+		}
+		
+		//check the game is ended
+		if(gamePhase.equals(GamePhase.GAME_OVER) && !isEnded) {
+			System.out.println("Game is over");
+			this.isEnded = true;
+			this.printState();
+		}
 	}
 	
-	private void printState() {
+	public void printState() {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append(" - Game State -").append(System.lineSeparator());
@@ -86,6 +98,10 @@ public class Game {
 		builder.append(System.lineSeparator());
 		
 		System.out.println(builder.toString());
+	}
+
+	public boolean isEnded() {
+		return isEnded;
 	}
 
 }
